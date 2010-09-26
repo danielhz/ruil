@@ -22,7 +22,9 @@ begin
     gemspec.homepage = "http://github.com/danielhz/ruil"
     gemspec.summary = "Basic tools for build web appplications on top of rack"
     gemspec.rubyforge_project = "ruil"
-    gemspec.description = "Basic tools for build web appplications on top of rack"
+    gemspec.description = "It provides a class to derivate the application resources\n" +
+      "and a delegator that select the appropiate resource to answer\n" +
+      "a request. Also, it include a templating adapter based on Tenjin."
   end
 rescue LoadError
 end
