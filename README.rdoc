@@ -1,0 +1,40 @@
+= uagent
+
+Basic tools for build web appplications on top of rack
+
+== Install
+
+    $ gem install ruil
+
+== Usage
+
+=== Code example
+
+== Install from code
+
+First download the code from the repository:
+
+    $ git clone git@github.com:danielhz/ruil.git
+
+This project uses jeweler to build the gem, so you can use this commands:
+
+    $ rake build            # to build the gem
+    $ rake install          # to build and install the gem in one step
+
+Also, if you want test the gem you can use the spec task:
+
+    $ rake spec
+
+This project uses rcov so you can check the coverage opening the HTML
+file in the coverage directory after running the spec.
+
+== Other Stuff
+
+Author:: Daniel Hernández, daniel@degu.cl
+License:: GPL V3
+
+== Warranty
+
+This software is provided "as is" and without any express or implied
+warranties, including, without limitation, the implied warranties of
+merchantability and fitness for a particular purpose.
