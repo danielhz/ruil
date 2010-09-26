@@ -11,14 +11,24 @@ module Ruil
     #     used to generate the resource.
     # - user_agent_parser: is an object with a method call that analize the
     #     request to get the key for the template to use.
-    def initialize(templates, user_agent_parser)
-      @templates     = templates
+    def initialize(user_agent_parser, &block)
+      @templates         = {}
       @user_agent_parser = user_agent_parser
+      yield self
+    end
+
+    def add_template(key, template)
+      @templates[key] = template
     end
 
     # The regular expression for the url of this resource.
-    def path_patern
+    def path_pattern
       '/'
+    end
+
+    # The regular expression for the url of this resource.
+    def template_pattern
+      '*.*.html'
     end
 
     # Authorize the access to this resource.

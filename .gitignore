@@ -3,3 +3,4 @@ html
 pkg
 *.gemspec
 *~
+*.html.cache
