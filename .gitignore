@@ -1,6 +1,6 @@
 coverage
 html
 pkg
-*.gemspec
+ruil.gemspec
 *~
 *.html.cache
