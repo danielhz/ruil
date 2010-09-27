@@ -1,6 +1,6 @@
 = ruil
 
-Basic tools for build web appplications on top of rack
+Basic tools for build web applications on top of rack
 
 == Install
 
