@@ -26,7 +26,9 @@ describe 'Delegator' do
       /Mobile/ === env['HTTP_USER_AGENT'] ? :mobile : :desktop
     end
     template_dir = File.join(File.dirname(__FILE__), 'templates')
-    @delegator = Ruil::Delegator.new(user_agent_parser, template_dir, Ruil::TenjinTemplate) do |d|
+    @delegator = Ruil::Delegator.new(:user_agent_parser => user_agent_parser,
+                                     :template_dir => template_dir,
+                                     :template_engine => Ruil::TenjinTemplate) do |d|
       d.add_resource a_resource
       d.add_resource b_resource
     end

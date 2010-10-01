@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Daniel Hern\303\241ndez"]
-  s.date = %q{2010-09-26}
+  s.date = %q{2010-09-28}
   s.description = %q{It provides a class to derivate the application resources
 and a delegator that select the appropiate resource to answer
 a request. Also, it include a templating adapter based on Tenjin.}
@@ -25,6 +25,7 @@ a request. Also, it include a templating adapter based on Tenjin.}
      "lib/ruil/resource.rb",
      "lib/ruil/tenjin_template.rb",
      "rakefile",
+     "ruil.gemspec",
      "test/delegator_test.rb",
      "test/resource_test.rb",
      "test/templates/a.desktop.html",

@@ -4,22 +4,30 @@ module Ruil
 
   class Delegator
 
-    # Initialize a delegator
-    def initialize(user_agent_parser, template_dir, template_engine, &block)
-      @user_agent_parser = user_agent_parser
-      @template_engine   = template_engine
-      @template_dir      = template_dir
+    # Initialize a delegator.
+    #
+    # Options:
+    # - +user_agent_parser+ is a precedure that get a template key from the enviroment.
+    #   If no procedure is given, it uses a procedure that always returns :desktop.
+    # - +template_engine+ is a class that allows to build template objects using a file
+    #   name as parameter.
+    # - +template_dir+ is a directory where templates are stored.
+    # - +default_action+ is an action to delegate when the request matches no resources.
+    def initialize(options = {}, &block)
+      @user_agent_parser = options[:user_agent_parser] || Proc.new{ |env| :desktop }
+      @template_engine   = options[:template_engine]
+      @template_dir      = options[:template_dir]
+      @default_action    = options[:default_action] || Proc.new do |env|
+        [ 302, {"Content-Type" => "text/html", 'Location'=> '/' }, [] ]
+      end
       @resources         = []
       yield self
     end
 
-    # Default action
-    def default(env)
-      [ 302, {"Content-Type" => "text/html", 'Location'=> '/' }, [] ]
-    end
-
-    def add_resource(resource_class)
-      resource_class.new(@user_agent_parser) do |r|
+    # Add a resource to the delegator
+    def add_resource(resource_class, options = {})
+      opts = { :user_agent_parser => @user_agent_parser }.merge(options)
+      resource_class.new(opts) do |r|
         Dir[File.join(@template_dir, r.template_pattern)].each do |file|
           user_agent = File.basename(file).split('.')[1]
           template = @template_engine.new(file)
@@ -29,12 +37,12 @@ module Ruil
       end
     end
 
-    # Call method
+    # Call the delegator and delegates the request to some resource.
     def call(env)
       @resources.each do |path_pattern, proc|
         return proc.call(env) if path_pattern === env['PATH_INFO']
       end
-      default(env)
+      @default_action.call(env)
     end
 
   end

@@ -7,9 +7,9 @@ describe 'Resource' do
     user_agent_parser = Proc.new do |env|
       /Mobile/ === env['HTTP_USER_AGENT'] ? :mobile : :desktop
     end
-    @resource = Ruil::Resource.new(user_agent_parser) do |r|
-      r.add_template :mobile, Proc.new { |opt| opt[:template_key].to_s }
-      r.add_template :desktop, Proc.new { |opt| opt[:template_key].to_s }
+    @resource = Ruil::Resource.new(:user_agent_parser => user_agent_parser) do |r|
+      r.add_template :mobile, Proc.new { |opt| 'mobile'.to_s }
+      r.add_template :desktop, Proc.new { |opt| 'desktop'.to_s }
     end
   end
 

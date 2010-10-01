@@ -51,3 +51,21 @@ rd = Rake::RDocTask.new do |rdoc|
   rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb', 'doc/**/*.rdoc')
 end
+
+desc 'Push changes to each repository'
+task :git_push do
+  remote_repos = `git remote`.split("\n")
+  remote_repos.each do |repo|
+    puts "git push --repo=#{repo}"
+    system "git push --repo=#{repo}"
+  end
+end
+
+desc 'Build and upload the last gem file'
+task :gem_push => :build do
+  gem = Dir['pkg/*.gem'].map { |f|
+    [f, File.basename(f).gsub(/.gem$/, '').gsub(/^ruil-/, '').split('.').map{ |x| x.to_i}]
+  }.sort.last
+  puts "gem push #{gem[0]}"
+  system "gem push #{gem[0]}"
+end
