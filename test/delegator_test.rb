@@ -7,16 +7,16 @@ describe 'Delegator' do
 
   before(:all) do
     a_resource = Class.new(Ruil::Resource) do
-      def path_pattern
-        /^\/a/
+      def ===(env)
+        /^\/a/ === env['PATH_INFO']
       end
       def template_pattern
         'a.*.html'
       end
     end
     b_resource = Class.new(Ruil::Resource) do
-      def path_pattern
-        /^\/b/
+      def ===(env)
+        /^\/b/ === env['PATH_INFO']
       end
       def template_pattern
         'b.*.html'

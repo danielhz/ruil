@@ -4,9 +4,6 @@ module Ruil
 
   class Resource
 
-    # A regular expression to hear
-    attr_reader :path_pattern
-
     # A regular expression to search templates
     attr_reader :template_pattern
 
@@ -23,6 +20,11 @@ module Ruil
       @authorize_proc    = options[:authorize_proc] || Proc.new{ |env| true }
       @unauthorized_proc = options[:unauthorized_proc] || Proc.new{ |env| Resource.redirect('/unauthorized') }
       yield self
+    end
+
+    # Check is the resource match an URL
+    def ===(env)
+      @path_pattern === env['PATH_INFO']
     end
 
     # Add a template to the templates list.

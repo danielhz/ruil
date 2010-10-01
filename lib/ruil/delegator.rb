@@ -33,15 +33,13 @@ module Ruil
           template = @template_engine.new(file)
           r.add_template user_agent.to_sym, template
         end
-        @resources << [r.path_pattern, r]
+        @resources << r
       end
     end
 
     # Call the delegator and delegates the request to some resource.
     def call(env)
-      @resources.each do |path_pattern, proc|
-        return proc.call(env) if path_pattern === env['PATH_INFO']
-      end
+      @resources.each { |r| return r.call(env) if r === env }
       @default_action.call(env)
     end
 
