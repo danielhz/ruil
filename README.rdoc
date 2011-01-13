@@ -14,7 +14,7 @@ Basic tools for build web applications on top of rack
 
 First download the code from the repository:
 
-    $ git clone git@github.com:danielhz/ruil.git
+    $ git clone git://github.com/danielhz/ruil.git
 
 This project uses jeweler to build the gem, so you can use this commands:
 
