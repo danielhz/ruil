@@ -6,31 +6,26 @@ require 'ruil/tenjin_template'
 describe 'Delegator' do
 
   before(:all) do
-    a_resource = Class.new(Ruil::Resource) do
-      def ===(env)
-        /^\/a/ === env['PATH_INFO']
-      end
-      def template_pattern
-        'a.*.html'
-      end
-    end
-    b_resource = Class.new(Ruil::Resource) do
-      def ===(env)
-        /^\/b/ === env['PATH_INFO']
-      end
-      def template_pattern
-        'b.*.html'
-      end
-    end
     user_agent_parser = Proc.new do |env|
       /Mobile/ === env['HTTP_USER_AGENT'] ? :mobile : :desktop
     end
-    template_dir = File.join(File.dirname(__FILE__), 'templates')
-    @delegator = Ruil::Delegator.new(:user_agent_parser => user_agent_parser,
-                                     :template_dir => template_dir,
-                                     :template_engine => Ruil::TenjinTemplate) do |d|
-      d.add_resource a_resource
-      d.add_resource b_resource
+    @delegator = Delegator.new do |d|
+      d << Ruil::Resource.new (
+        :user_agent_parser => user_agent_parser,
+        :path_pattern => /\/a./
+      ) do |r|
+        Dir["test/resource_templates/a.*.tenjin.html"].each do |t|
+          r << Ruil::TenjinTemplate.new(t)
+        end
+      end
+      d << Ruil::Resource.new (
+        :user_agent_parser => user_agent_parser,
+        :path_pattern => /\/b./
+      ) do |r|
+        Dir["test/resource_templates/b.*.tenjin.html"].each do |t|
+          r << Ruil::TenjinTemplate.new(t)
+        end
+      end
     end
   end
 
