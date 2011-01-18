@@ -45,7 +45,7 @@ module Ruil
 
     # Add a resource to the delegator.
     def <<(resource)
-      @resources << r
+      @resources << resource
     end
 
     # Call the delegator and delegates the request to some resource.

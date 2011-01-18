@@ -34,7 +34,7 @@ module Ruil
       @file = file
       a = @file.split('.')
       @name   = a[0]
-      @key    = a[1]
+      @key    = a[1].to_sym
       @engine = case a[2]
                 when "tenjin"
                   require "tenjin"

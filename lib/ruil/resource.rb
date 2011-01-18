@@ -65,7 +65,8 @@ module Ruil
 
     # Build options to render the resource.
     # Options are passed to the template when rendering the resource.
-    def options(env)
+    def template_content(env)
+      puts "reading"
       {
         :env => env
       }
@@ -74,7 +75,7 @@ module Ruil
     # Call the resource and get the response.
     def call(env)
       if @authorize_proc.call(env)
-        render_html(env)
+        render(env)
       else
         @unauthorized.call(env)
       end
@@ -83,7 +84,17 @@ module Ruil
     # Render the resource.
     def render(env)
       template = @templates[@user_agent_parser.call(env) || @templates.keys.sort.first]
-      content = template.call(options(env))
+      # START DEBUGGING
+      puts template.class.name
+      puts @templates.keys.inspect
+      puts @user_agent_parser.call(env).inspect
+      puts env.inspect
+      puts template_content(env).inspect
+      puts env.inspect
+      content = template_content(env)
+      puts "content:" + content.inspect
+      # STOP DEBUGGING
+      content = template.call(template_content(env))
       [200, {"Content-Type" => template.media_type}, [content]]
     end
 

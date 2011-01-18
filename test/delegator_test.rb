@@ -1,29 +1,29 @@
 require 'rubygems'
 require 'ruil/delegator'
 require 'ruil/resource'
-require 'ruil/tenjin_template'
+require 'ruil/template'
 
-describe 'Delegator' do
+describe Ruil::Delegator do
 
   before(:all) do
     user_agent_parser = Proc.new do |env|
       /Mobile/ === env['HTTP_USER_AGENT'] ? :mobile : :desktop
     end
-    @delegator = Delegator.new do |d|
-      d << Ruil::Resource.new (
+    @delegator = Ruil::Delegator.new do |d|
+      d << Ruil::Resource.new(
         :user_agent_parser => user_agent_parser,
         :path_pattern => /\/a./
       ) do |r|
         Dir["test/resource_templates/a.*.tenjin.html"].each do |t|
-          r << Ruil::TenjinTemplate.new(t)
+          r << Ruil::Template.new(t)
         end
       end
-      d << Ruil::Resource.new (
+      d << Ruil::Resource.new(
         :user_agent_parser => user_agent_parser,
         :path_pattern => /\/b./
       ) do |r|
         Dir["test/resource_templates/b.*.tenjin.html"].each do |t|
-          r << Ruil::TenjinTemplate.new(t)
+          r << Ruil::Template.new(t)
         end
       end
     end

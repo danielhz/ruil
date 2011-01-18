@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'ruil/resource'
+require 'ruil/template'
 
 describe Ruil::Resource do
 
@@ -14,10 +15,10 @@ describe Ruil::Resource do
     end
     @resource = TestResource.new(
       :user_agent_parser => user_agent_parser,
-      :path_pattern = /\/test/
+      :path_pattern => /\/test/
     ) do |r|
       Dir["test/resource_templates/test.*.tenjin.html"].each do |t|
-        r << Ruil::Tenjin.new(t)
+        r << Ruil::Template.new(t)
       end
     end
   end
