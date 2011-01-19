@@ -65,35 +65,35 @@ module Ruil
 
     # List model instances.
     def list_resource
-      Ruil::Resource.new do |r|
+      Ruil::ModelResourceLister.new do |r|
         # TODO
       end
     end
 
     # Show a model instance.
     def show_resources
-      Ruil::Resource.new do |r|
+      Ruil::ModelResourceShower.new do |r|
         # TODO
       end
     end
 
     # Add a model instance.
     def create_resource
-      Ruil::Resource.new do |r|
+      Ruil::ModelResourceCreator.new do |r|
         # TODO
       end
     end
 
     # Update a model instance.
     def update_resource
-      Ruil::Resource.new do |r|
+      Ruil::ModelResourceUpdator.new do |r|
         # TODO
       end
     end
 
     # Delete a model instance.
     def delete_resource
-      Ruil::Resource.new do |r|
+      Ruil::ModelResourceDeletor.new do |r|
         # TODO
       end
     end
