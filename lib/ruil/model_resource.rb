@@ -21,12 +21,12 @@ module Ruil
   # For example:
   #
   # - <tt>GET /users/list</tt> => lists first page of users users
-  # - GET /users/list?page=2 => lists second page of users
-  # - GET /users/id/23 => shows the user with id 23.
-  # - POST /users => creates a new user.
+  # - <tt>GET /users/list?page=2</tt> => lists second page of users
+  # - <tt>GET /users/id/23</tt> => shows the user with id 23.
+  # - <tt>POST /users</tt> => creates a new user.
   #   Parameters are passed using the application/x-www-form-urlencoded media type.
-  # - PUT /users/id/23 => creates or update the user with id 23.
-  # - DELETE /users/id/23 => deletes the user with id 23.
+  # - <tt>PUT /users/id/23</tt> => creates or update the user with id 23.
+  # - <tt>DELETE /users/id/23</tt> => deletes the user with id 23.
   class ModelResource
 
     # Create a new resource.
@@ -46,9 +46,19 @@ module Ruil
     #   specify a mode for rendering the resource (as desktop, mobile,...),
     #   engine specify one of the supported engines (tenjin at this moment)
     #   and format specify the media type of the resource (html, xml, json).
+    #
+    # - *user_agent_parser* is an object with a method call that analize the
+    #   request to get the key for the template to use. The key is a symbol
+    #   that identifies the user, like :desktop, :mobile or :iphone. Default
+    #   value is USER_AGENT_PARSER. If USER_AGENT_PARSER is undefined then
+    #   the new object uses a Proc instance that always returns :desktop.
     def initialize(model, template_dir = nil)
       @model        = model
       @template_dir = template_dir || "dynamic/templates/#{@model.table_name}"
+      @user_agent_parser =
+        options[:user_agent_parser] ||
+        ( defined?(USER_AGENT_PARSER).nil? ? nil : USER_AGENT_PARSER ) ||
+        Proc.new { |env| :desktop }
       @delegator = Ruil::Delegator.new do |d|
         d << list_resource
         d << show_resource
