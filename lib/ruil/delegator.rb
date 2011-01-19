@@ -38,7 +38,7 @@ module Ruil
       @default_action    = options[:default_action] || Proc.new do |env|
         [ 302, {"Content-Type" => "text/html", 'Location'=> '/' }, [] ]
       end
-      @path_pattern      = options[:path_pattern] # TODO add a default value.
+      @path_pattern      = options[:path_pattern] || //
       @resources         = []
       yield self
     end
@@ -50,7 +50,7 @@ module Ruil
 
     # Check if the delegator responds to a request.
     def ===(env)
-      @path_pattern === env
+      @path_pattern === env['PATH_INFO']
     end
 
     # Call the delegator and delegates the request to some resource.
