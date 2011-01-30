@@ -15,7 +15,7 @@ module Ruil
 
     # Gets the template key (allways 'json').
     def key
-      "json"
+      :json
     end
 
     # Creates a resource representation using the template. The

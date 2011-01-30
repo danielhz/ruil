@@ -12,7 +12,7 @@ describe Ruil::JSONTemplate do
   end
 
   it 'should answer to a "json" key' do
-    @template.key.should == 'json'
+    @template.key.should == :json
   end
 
   it 'should render json files' do
