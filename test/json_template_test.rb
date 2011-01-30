@@ -17,7 +17,7 @@ describe Ruil::JSONTemplate do
 
   it 'should render json files' do
     data = { :r => (1...10).map { |x| rand } }
-    rendered = JSON.parse(@template.render(data))
+    rendered = JSON.parse(@template.call(data))
     rendered['r'].each_index do |i|
       rendered['r'][i].to_s.should == data[:r][i].to_s
     end
