@@ -4,7 +4,7 @@ require 'json'
 
 describe Ruil::JSONTemplate do
   before(:all) do
-    @template = Ruil::JSONTemplate.new
+    @template = Ruil::JSONTemplate.instance
   end
 
   it 'should have a JSON mime type' do
