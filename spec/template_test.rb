@@ -6,7 +6,7 @@ require 'rexml/document'
 describe Ruil::Template do
 
   before(:all) do
-    @template = Ruil::Template.new("test/resource_templates/template_test.desktop.tenjin.html")
+    @template = Ruil::Template.new("spec/resource_templates/template_test.desktop.tenjin.html")
   end
 
   it 'should parse the name parameter' do
