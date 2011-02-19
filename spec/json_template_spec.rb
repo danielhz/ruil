@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'ruil/json_template'
 require 'json'
+require 'rspec'
 
 describe Ruil::JSONTemplate do
   before(:all) do

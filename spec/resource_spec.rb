@@ -3,6 +3,7 @@ require 'ruil/resource'
 require 'ruil/template'
 require 'ruil/path_info_parser'
 require 'ruil/register'
+require 'rspec'
 
 describe Ruil::Resource do
 

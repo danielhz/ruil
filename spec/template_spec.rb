@@ -2,6 +2,7 @@ require 'rubygems'
 require 'ruil/template'
 require 'tenjin'
 require 'rexml/document'
+require 'rspec'
 
 describe Ruil::Template do
 
