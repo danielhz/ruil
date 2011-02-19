@@ -1,5 +1,5 @@
 coverage
-html
+doc
 pkg
 *~
 *.html.cache
