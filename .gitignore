@@ -3,3 +3,4 @@ doc
 pkg
 *~
 *.html.cache
+.yardoc
