@@ -1,38 +1,22 @@
 require 'rubygems'
 require 'ruil/resource'
 require 'ruil/template'
+require 'ruil/path_info_parser'
+require 'ruil/register'
 
 describe Ruil::Resource do
 
   before(:all) do
-    user_agent_parser = Proc.new do |env|
-      /Mobile/ === env['HTTP_USER_AGENT'] ? :mobile : :desktop
-    end
-    class TestResource < Ruil::Resource
-      def options
-        super.merge({ :x => 1 })
-      end
-    end
-    @resource = TestResource.new(
-      :user_agent_parser => user_agent_parser,
-      :path_pattern => /\/test/
-    ) do |r|
-      Dir["test/resource_templates/test.*.tenjin.html"].each do |t|
-        r << Ruil::Template.new(t)
-      end
+    @resource = Ruil::Resource.new(:get, '/test/:id') do |r|
+      r.content_generator = Proc.new{ |e| e[:path_info_params] }
     end
   end
 
-  it 'should display a content' do
-    env = { 'HTTP_USER_AGENT' => 'Mobile'}
-    @resource.call(env).should == [200, {"Content-Type" => "text/html"}, ['mobile 1']]
-    env = { 'HTTP_USER_AGENT' => 'Desktop' }
-    @resource.call(env).should == [200, {"Content-Type" => "text/html"}, ['desktop 1']]
-  end
-
-  it 'could check if it matches an URL' do
-    (@resource === { 'PATH_INFO' => '/test/1234' }).should == true
-    (@resource === { 'PATH_INFO' => '/other/1234' }).should == false
+  it 'should response to a request' do
+    env = { 'HTTP_USER_AGENT' => 'Mobile'}.merge({'PATH_INFO' => '/test/12.json'})
+    @resource.call(env).should == [200, {"Content-Type" => "application/json"}, ['{"id":"12"}']]
+    env = { 'HTTP_USER_AGENT' => 'Mobile'}.merge({'PATH_INFO' => '/test/12/aaa'})
+    @resource.call(env).should == false
   end
 
 end

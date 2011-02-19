@@ -3,21 +3,17 @@ require 'tenjin'
 
 module Ruil
 
-  # Ruil::TenjinTemplate objects implements the interface nedeed by
-  # Ruil::Resource to render the bodies of HTTP responses. That
-  # inteface includes the methods: call and media_type.
+  # {Ruil::TenjinTemplate} objects implement the interface neded by
+  # {Ruil::Resource} to render the bodies of HTTP responses. That
+  # inteface includes the methods: {#key}, {#call} and {#media_type}.
   class Template
 
-    # The template name.
-    attr_reader :name
-
     # The template key.
+    # @return [Symbol] key the template key.
     attr_reader :key
 
-    # The template engine.
-    attr_reader :engine
-
     # The template media type.
+    # @return [String] media_type the template media type
     attr_reader :media_type
 
     # Initialize a new template object using the template file name.
@@ -33,7 +29,6 @@ module Ruil
     def initialize(file)
       @file = file
       a = File.basename(@file).split('.')
-      @name   = a[0]
       @key    = a[1].to_sym
       @engine = case a[2]
                 when "tenjin"
@@ -52,8 +47,11 @@ module Ruil
 
     # Creates a resource representation using the template. The
     # options parameter is a hash with the data to fill the template.
-    def call(options)
-      @engine.render(@file, options)
+    #
+    # @param [Hash] content data to fill the template.
+    # @return [String] the output generated filling the template.
+    def call(content)
+      @engine.render(@file, content)
     end
 
   end

@@ -9,16 +9,8 @@ describe Ruil::Template do
     @template = Ruil::Template.new("spec/resource_templates/template_test.desktop.tenjin.html")
   end
 
-  it 'should parse the name parameter' do
-    @template.name.should == 'template_test'
-  end
-
   it 'should parse the key parameter' do
     @template.key.should == :desktop
-  end
-
-  it 'should parse the engine parameter' do
-    @template.engine.class.should == Tenjin::Engine
   end
 
   it 'should parse the media type' do
