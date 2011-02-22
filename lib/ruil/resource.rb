@@ -1,6 +1,10 @@
 require 'rubygems'
 require 'rack'
 
+require 'ruil/path_info_parser'
+require 'ruil/register'
+require 'ruil/json_template'
+
 module Ruil
 
   # {Ruil::Resource} objects answer requests (see the method {#call}) with an array
