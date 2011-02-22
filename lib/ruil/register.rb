@@ -7,10 +7,10 @@ module Ruil
   module Register
 
     @@resources = {
-      :get    => [],
-      :post   => [],
-      :put    => [],
-      :delete => []
+      'GET'    => [],
+      'POST'   => [],
+      'PUT'    => [],
+      'DELETE' => []
     }
 
     # Register a resource.
@@ -21,8 +21,18 @@ module Ruil
     end
 
     # Answer a request with the response of the matched resource for that request.
-    def call(request)
-      @@resources[request.request_method.to_sym].each do |resource|
+    def self.call(request_or_env)
+      case request_or_env
+      when Rack::Request
+        request = request_or_env
+      when Hash
+        request = Rack::Request.new(request_or_env)
+      else
+        raise "Invalid request: #{request_or_env.inspect}"
+      end
+      p request.request_method
+      p @@resources
+      @@resources[request.request_method].each do |resource|
         response = resource.call(request)
         return response if response
       end

@@ -7,31 +7,32 @@ require 'ruil/json_template'
 
 module Ruil
 
-  # {Ruil::Resource} objects answer requests (see the method {#call}) with an array
-  # following the Rack interface. If the request not match the resource, +false+ is
-  # returned.
-  # Also, a resource includes a set of templates to delegate the action of rendering
-  # a resource.
+  # {Ruil::Resource} objects answer requests (see the method {#call}) with
+  # an array following the Rack interface. If the request not match the
+  # resource, +false+ is returned.
+  # Also, a resource includes a set of templates to delegate the action of
+  # rendering a resource.
   #
   # === Use example
   #
   # The next example shows how to create and use a resource.
   #
   #    resource = Resource.new(:get, "/index")
-  #    puts resource.call(request)          # => the response to the request
+  #    puts resource.call(request)        # => the response to the request
   #
-  # Every resource is automatically regitered into {Ruil::Register} when it is created.
-  # Thus, you may use {Ruil::Register.call} to call resource. instead using
-  # {#call} directly.
+  # Every resource is automatically regitered into {Ruil::Register} when it
+  # is created. Thus, you may use {Ruil::Register.call} to call resource
+  # instead using {#call} directly.
   #
   #    resource = Resource.new(:get, "/index")
-  #    puts Ruil::Register.call(request)    # => the response using the register
+  #    puts Ruil::Register.call(request)  # => the response using the register
   #
   # === Templates
   #
   # The interface of templates consists in the +new+, +key+ and +call+ methods.
-  # Classes that satisfy that interface are {Ruil::Template} and {Ruil::JSONTemplate}.
-  # Every resource have a {Ruil::JSONTemplate} as a default template.
+  # Classes that satisfy that interface are {Ruil::Template} and
+  # {Ruil::JSONTemplate}. Every resource have a {Ruil::JSONTemplate} as a
+  # default template.
   #
   #    resource = Resource.new(:get, "/index") do |res|
   #      Dir['path_to_templates/*'].each do |file|
@@ -78,10 +79,10 @@ module Ruil
 
     # Initialize a new resource.
     #
-    # @param [Symbol, Array<Symbol>] request_methods
+    # @param [String, Array<String>] request_methods
     #   indentify the request methods that this resource responds.
-    #   Valid symbols for request methods are: <tt>:get</tt>, <tt>:post</tt>,
-    #   <tt>:put</tt> and <tt>:delete</tt>.
+    #   Valid symbols for request methods are: <tt>"GET"</tt>, <tt>"POST"</tt>,
+    #   <tt>"PUT"</tt> and <tt>"DELETE"</tt>.
     #
     # @param [String] path_pattern
     #   defines a pattern to match paths.
@@ -91,7 +92,7 @@ module Ruil
       @templates         = {}
       self << Ruil::JSONTemplate.instance
       @request_methods   = case request_methods
-                           when Symbol
+                           when String
                              [request_methods]
                            when Array
                              request_methods
@@ -113,6 +114,7 @@ module Ruil
         [ 302, {"Content-Type" => "text/html", 'Location'=> "/unauthorized" }, [] ]
       end
       yield self if block_given?
+      puts 'to register'
       Ruil::Register << self
     end
 
