@@ -30,8 +30,6 @@ module Ruil
       else
         raise "Invalid request: #{request_or_env.inspect}"
       end
-      p request.request_method
-      p @@resources
       @@resources[request.request_method].each do |resource|
         response = resource.call(request)
         return response if response
