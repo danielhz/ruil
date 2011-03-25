@@ -27,7 +27,7 @@ begin
     gemspec.authors = ["Daniel Hernández"]
     gemspec.email = "daniel@degu.cl"
     gemspec.homepage = "http://github.com/danielhz/ruil"
-    gemspec.summary = "Basic tools for build web appplications on top of rack"
+    gemspec.summary = "Minimalist library to build web appplications on top of rack"
     gemspec.rubyforge_project = "ruil"
     gemspec.description = "It provides a class to derivate the application resources\n" +
       "and a delegator that select the appropiate resource to answer\n" +
@@ -38,15 +38,6 @@ end
 
 YARD::Rake::YardocTask.new do |t|
   t.options += ['--title', "Ruil Documentation"]
-end
-
-desc 'Push changes to each repository'
-task :git_push do
-  remote_repos = `git remote`.split("\n")
-  remote_repos.each do |repo|
-    puts "git push --repo=#{repo}"
-    system "git push --repo=#{repo}"
-  end
 end
 
 desc 'Build and upload the last gem file'
