@@ -45,7 +45,7 @@ module Ruil
     # This attribute allows you to redefine the behavior of actions
     # for any {Ruil::MongoResource}.
     # @return [Hash<Symbol><Ruil::MongoResource] the actions.
-    attr_accessir :actions
+    attr_accessor :actions
 
     # Creates a new {Ruil::MongoResource}.
     #
@@ -67,8 +67,10 @@ module Ruil
       yield self if block_given?
       # Procedure to load resource templates
       @load_templates  = Proc.new do |resource, action|
-        Dir[File.join(@templates_dir, @collection_name, "#{action}.*")].each do |t|
-          resource << Ruil::Template.new t
+        Dir[File.join(@templates_dir, @collection_name, "#{action}.*.*.*")].each do |t|
+          if /\.(html|xhtml)$/ === t
+            resource << Ruil::Template.new(t)
+          end
         end
       end
       # List resources
@@ -83,7 +85,8 @@ module Ruil
       # Show a resource
       @actions[:show] = Ruil::Resource.new("GET", "/#{@collection_name}/:_id") do |r|
         r.content_generator = Proc.new do |e|
-          item = @collection.find(:_id => BSON::ObjectId.from_string(id)).first
+          id = BSON::ObjectId.from_string(e[:path_info_params][:_id])
+          item = @collection.find(:_id => id).first
           { :item => @map_show_item.call(item) }
         end
         @load_templates.call r, 'show'
