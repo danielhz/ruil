@@ -4,6 +4,7 @@ Basic tools for build web applications on top of rack
 
 == Install
 
+    !!!sh
     $ gem install ruil
 
 == Usage
@@ -14,15 +15,18 @@ Basic tools for build web applications on top of rack
 
 First download the code from the repository:
 
+    !!!sh
     $ git clone git://github.com/danielhz/ruil.git
 
 This project uses jeweler to build the gem, so you can use this commands:
 
+    !!!sh
     $ rake build            # to build the gem
     $ rake install          # to build and install the gem in one step
 
 Also, if you want test the gem you can use the spec task:
 
+    !!!sh
     $ rake spec
 
 This project uses rcov so you can check the coverage opening the HTML
