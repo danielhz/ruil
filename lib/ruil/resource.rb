@@ -17,14 +17,14 @@ module Ruil
   #
   # The next example shows how to create and use a resource.
   #
-  #    resource = Resource.new(:get, "/index")
+  #    resource = Resource.new('GET', "/index")
   #    puts resource.call(request)        # => the response to the request
   #
   # Every resource is automatically regitered into {Ruil::Register} when it
   # is created. Thus, you may use {Ruil::Register.call} to call resource
   # instead using {#call} directly.
   #
-  #    resource = Resource.new(:get, "/index")
+  #    resource = Resource.new('GET', "/index")
   #    puts Ruil::Register.call(request)  # => the response using the register
   #
   # === Templates
@@ -34,9 +34,9 @@ module Ruil
   # {Ruil::JSONTemplate}. Every resource have a {Ruil::JSONTemplate} as a
   # default template.
   #
-  #    resource = Resource.new(:get, "/index") do |res|
+  #    resource = Resource.new('GET', "/index") do |res|
   #      Dir['path_to_templates/*'].each do |file|
-  #        res << Ruil::Template.new file
+  #        res << Ruil::Template.new(file)
   #      end
   #    end
   #
@@ -114,7 +114,6 @@ module Ruil
         [ 302, {"Content-Type" => "text/html", 'Location'=> "/unauthorized" }, [] ]
       end
       yield self if block_given?
-      puts 'to register'
       Ruil::Register << self
     end
 
