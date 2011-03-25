@@ -26,23 +26,27 @@ module Ruil
     # We use distinct templates for the same resource to send
     # different representations of the resource depending the client
     # user agent and preferences.
-    def initialize(file)
-      @file = file
+    def initialize(file, layout = nil)
+      @file   = file
       a = File.basename(@file).split('.')
       @key    = a[1].to_sym
       @engine = case a[2]
                 when "tenjin"
                   require "tenjin"
-                  Tenjin::Engine.new
+                  Tenjin::Engine.new({:layout => layout})
                 else
                   raise "Template engine unknown #{a[2]}"
                 end
-      @media_type  = case a[3]
-                     when "html"
-                       "text/html"
-                     else
-                       raise "Media type unknow for #{a[3]}"
-                     end
+      @media_type = case a[3]
+                    when "html"
+                      "text/html"
+                      "application/xhtml+xml"
+                    when "xhtml"
+                      "text/xhtml"
+                      "application/xhtml+xml"
+                    else
+                      raise "Media type unknow for #{a[3]}"
+                    end
     end
 
     # Creates a resource representation using the template. The
