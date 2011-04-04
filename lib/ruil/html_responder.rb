@@ -6,7 +6,7 @@ module Ruil
   # {Ruil::emplate} objects implement receive requests and respond
   # with {Rack::Response} where bodies are HTML documents and the media
   # type is "text/html" or "application/xhtml+xml".
-  class Template
+  class HTMLResponder
 
     # Initialize a new template object using the template file name
     # prefix. Also a layout could be defined with the template.
