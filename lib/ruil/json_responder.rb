@@ -4,7 +4,9 @@ require 'singleton'
 
 module Ruil
 
-  # {Ruil::JSONResponder} recive a request and gets a Rack::Response.
+  # The {Ruil::JSONResponder} singleton object recive a request and gets
+  # a Rack::Response serializing the {Ruil::Request#generated_data} in the 
+  # JSON format as the response body.
   #
   # === Usage
   #
