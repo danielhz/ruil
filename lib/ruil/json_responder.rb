@@ -10,12 +10,13 @@ module Ruil
   #
   # === Usage
   #
-  #    request.generated_data             # => {'some':['data']}
-  #    responder = JSONResponder.new
+  #    request = Ruil::Request.new(Rack::Request.new({}))
+  #    request.generated_data['some'] = ['data'] 
+  #    responder = JSONResponder.instance
   #    response  = responder.call(request)
   #    response.status                    # => 200
   #    response.header['Content-Type']    # => "application/json"
-  #    response.body                      # => "{'some':['data']}"
+  #    response.body                      # => ["{'some':['data']}"]
   #
   class JSONResponder
     include Singleton
@@ -24,8 +25,8 @@ module Ruil
     # @param request[Ruil::Request] the request
     # @return [Rack::Response] the response
     def call(request)
-      Rack::Response.new([request.generated_data.to_json],
-                         200, {'Content-Type' => 'application/json'})
+      body = [request.generated_data.to_json]
+      Rack::Response.new(body, 200, {'Content-Type' => 'application/json'})
     end
 
   end
