@@ -21,6 +21,9 @@ module Ruil
     end
 
     # Answer a request with the response of the matched resource for that request.
+    #
+    # @param request_or_env[Rack::Request, Hash] the request.
+    # @return [Rack::Response] the response to the request.
     def self.call(request_or_env)
       case request_or_env
       when Rack::Request
