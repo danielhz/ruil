@@ -5,12 +5,20 @@ require 'rspec'
 describe Ruil::Register do
 
   before(:all) do
+    class MockResponse
+      def initialize(value)
+        @value = value
+      end
+      def finish
+        @value
+      end
+    end
     class MockResource
       def initialize(value)
         @value = value
       end
       def call(request)
-        request.path_info == @value ? @value : false
+        request.path_info == @value ? MockResponse.new(@value) : false
       end
       def request_methods
         ['GET']

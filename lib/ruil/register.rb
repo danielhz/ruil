@@ -35,7 +35,7 @@ module Ruil
       end
       @@resources[request.request_method].each do |resource|
         response = resource.call(request)
-        return response if response
+        return response.finish if response
       end
       raise "No resource matching the request"
     end
