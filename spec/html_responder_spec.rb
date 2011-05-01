@@ -7,15 +7,16 @@ describe Ruil::HTMLResponder do
 
   before(:all) do
     # Define templates and requests
+    Dir.mkdir '/tmp/spec'
     @templates = []
     request = Ruil::Request.new(Rack::Request.new({}))
     request.rack_request.path_info = 'ruil.html'
     request.generated_data = {:v => 'HTML'}
-    @templates << ['/tmp/ruil.desktop.tenjin.html', '<p>#{@v}</p>', request]
+    @templates << ['/tmp/spec/ruil.desktop.tenjin.html', '<p>#{@v}</p>', request]
     request = Ruil::Request.new(Rack::Request.new({}))
     request.rack_request.path_info = 'ruil.xhtml'
     request.generated_data = {:v => 'XHTML'}
-    @templates << ['/tmp/ruil.desktop.tenjin.xhtml', '<p>#{@v}</p>', request]
+    @templates << ['/tmp/spec/ruil.desktop.tenjin.xhtml', '<p>#{@v}</p>', request]
     @templates.each do |t|
       template = File.new(t[0], 'w')
       template << t[1]
@@ -26,12 +27,13 @@ describe Ruil::HTMLResponder do
     # @layo << t[1]
     # template.close
     # Define responders
-    @responder1 = Ruil::HTMLResponder.new('/tmp/ruil')
+    @responder1 = Ruil::HTMLResponder.new('/tmp/spec/ruil')
     # @responder2 = Ruil::HTMLResponder.new('/tmp/ruil', @layout)
   end
 
   after(:all) do
-    # TODO: Remove template files
+    Dir['/tmp/spec/*'].each { |f| File.delete f }
+    Dir.delete '/tmp/spec'
   end
 
   it 'should respond files without layout' do
