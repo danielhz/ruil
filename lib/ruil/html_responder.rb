@@ -65,7 +65,7 @@ module Ruil
       when /.xhtml$/
         suffix = :xhtml
       else
-        raise "unknown media_type #{request.rack_request.path_info}"
+        return false
       end
       template = @templates.select{ |t| t[:suffix] == suffix }.map.first
 
@@ -73,7 +73,7 @@ module Ruil
         body = template[:engine].render(template[:file], request.generated_data)
         Rack::Response.new(body, 200, {'Content-Type' => template[:media_type]})
       else
-        raise "Not found"
+        return false
       end
     end
 

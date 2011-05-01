@@ -6,7 +6,7 @@ require 'rspec'
 describe Ruil::JSONResponder do
 
   before(:all) do
-    request = Ruil::Request.new(Rack::Request.new({}))
+    request = Ruil::Request.new(Rack::Request.new({'PATH_INFO' => 'foo.js'}))
     @data = { :r => (1...10).map { |x| rand } }
     request.generated_data = @data
     @response = Ruil::JSONResponder.instance.call(request)

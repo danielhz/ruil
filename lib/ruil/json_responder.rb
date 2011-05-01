@@ -25,6 +25,7 @@ module Ruil
     # @param request[Ruil::Request] the request
     # @return [Rack::Response] the response
     def call(request)
+      return false unless /\.js$/ === request.rack_request.path_info
       body = [request.generated_data.to_json]
       Rack::Response.new(body, 200, {'Content-Type' => 'application/json'})
     end
