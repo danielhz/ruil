@@ -53,98 +53,66 @@ module Ruil
   #    resource.call(env)    # match is false
   class Resource
 
-    # An procedure to perform before rendering the resource.
-    # The output of this procedure is the input of {#content_generator}.
-    # @return [Proc] the procedure
-    attr_accessor :action_performer
-
-    # A procedure to generate the content.
-    # The input of this procedure is the output of {#action_performer}.
-    # @return [Proc] the procedure
-    attr_accessor :content_generator
-
-    # An procedure to check if a user is authorized to access the resource.
-    # @return [Proc] the procedure
-    attr_accessor :authorizer
-
-    # An action to delegate when the user is unauthorized to access the resource.
-    # @return [Proc] the procedure
-    attr_accessor :unauthorized_proc
-
-    # An procedure that gets the apropiate template key for the user agent.
-    # @return [Proc] the procedure
-    attr_accessor :user_agent_parser
-
-    attr_accessor :request_methods
+    # Methods that a resource responds.
+    # 
+    # @return [Array<String>]
+    attr_reader :request_methods
 
     # Initialize a new resource.
     #
-    # @param [String, Array<String>] request_methods
-    #   indentify the request methods that this resource responds.
-    #   Valid symbols for request methods are: <tt>"GET"</tt>, <tt>"POST"</tt>,
-    #   <tt>"PUT"</tt> and <tt>"DELETE"</tt>.
+    # @param request_methods [String, Array<String>]
+    #   indentify the request methods that this resource responds. Valid
+    #   methods are: <tt>"GET"</tt>, <tt>"POST"</tt>, <tt>"PUT"</tt> and
+    #   <tt>"DELETE"</tt>.
     #
-    # @param [String] path_pattern
+    # @param path_pattern [String]
     #   defines a pattern to match paths.
     #   Patterns may include named parameters accessibles via the hash that
     #   the {Ruil::PathInfoParser#===} method returns after a match check.
-    def initialize(request_methods, path_pattern, &block)
-      @templates         = {}
-      self << Ruil::JSONTemplate.instance
-      @request_methods   = case request_methods
-                           when String
-                             [request_methods]
-                           when Array
-                             request_methods
-                           else
-                             raise 'Invalid value for request_methods: #{request_methods.inspect}'
-                           end
-      @path_info_parser  = Ruil::PathInfoParser.new path_pattern
-      @authorizer        = Proc.new{ |e| true }
-      @action_performer  = Proc.new{ |e| e }
-      @content_generator = Proc.new{ |e| {} }
-      @user_agent_parser = Proc.new do |e|
-        if /\.json$/ === e[:request].path_info
-          :json
+    #
+    # @param responders [Array<Responder>] an array with responders.
+    def initialize(request_methods, path_pattern, authorizer = nil, responders = [], &block)
+      # Set request methods
+      @request_methods =
+        case request_methods
+        when String
+          [request_methods]
+        when Array
+          request_methods
         else
-          :desktop
+          raise "Invalid value for request_methods: #{request_methods.inspect}"
         end
-      end
-      @unauthorized_proc = Proc.new do |request,path_info_params|
-        [ 302, {"Content-Type" => "text/html", 'Location'=> "/unauthorized" }, [] ]
-      end
-      yield self if block_given?
+      # Set the path info parser
+      @path_info_parser = Ruil::PathInfoParser.new(path_pattern)
+      # Set the authorizer method
+      @authorizer = authorizer
+      # Set responders
+      @responders = [Ruil::JSONResponder.instance] + responders
+      # Block that generates data
+      @block = Proc.new { |request| yield request } if block_given?
+      # Register
       Ruil::Register << self
     end
 
-    # Add a template to the templates managed for this resource.
-    # Each template is asociated with a key that the {#user_agent_parser} select.
+    # Respond a request
     #
-    # @param [Ruil::Template] template a template.
-    def <<(template)
-      @templates[template.key] = template
-    end
-
-    # Render the resource.
-    #
-    # @param [Hash,Rack::Request] request
-    #   a request to the resource.
-    def call(request)
-      e = {}
-      e[:request] = case request
-                    when Hash
-                      Rack::Request.new(request)
-                    when Rack::Request
-                      request
-                    else
-                      raise "Invalid request: #{request.inspect}"
-                    end
-      e[:path_info_params] = ( @path_info_parser === e[:request].path_info )
-      return false unless e[:path_info_params]
-      @unauthorize_proc.call(e) unless @authorizer.call(e)
-      template = @templates[@user_agent_parser.call(e) || :json]
-      body = template.call(@content_generator.call(@action_performer.call(e)))
-      [200, {"Content-Type" => template.media_type}, [body]]
+    # @param request [Rack::Request] a request to the resource.
+    # @return [Rack::Response] a response for the request.
+    def call(rack_request)
+      path_info = rack_request.path_info
+      path_info_params = ( @path_info_parser === path_info )
+      return false unless path_info_params
+      unless @authorizer.nil?
+        return @autorizer.unauthorized unless @authorizer.authorize(request)
+      end
+      request = Ruil::Request.new(rack_request)
+      request.generated_data[:path_info_params] = path_info_params
+      @block.call(request) unless @block.nil?
+      @responders.each do |responder|
+        response = responder.call(request)
+        return response if response
+      end
+      raise "Responder not found for #{request.inspect}"
     end
 
   end

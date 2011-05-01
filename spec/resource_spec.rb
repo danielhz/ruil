@@ -1,23 +1,31 @@
 require 'rubygems'
-require 'ruil/resource'
-require 'ruil/template'
-require 'ruil/path_info_parser'
-require 'ruil/register'
+require 'ruil'
 require 'rspec'
 
 describe Ruil::Resource do
 
   before(:all) do
-    @resource = Ruil::Resource.new(:get, '/test/:id') do |r|
-      r.content_generator = Proc.new{ |e| e[:path_info_params] }
+    @resource = Ruil::Resource.new('GET', '/test/:id') do |request|
+      request.generated_data = request.generated_data[:path_info_params]
     end
   end
 
-  it 'should response to a request' do
-    env = { 'HTTP_USER_AGENT' => 'Mobile'}.merge({'PATH_INFO' => '/test/12.json'})
-    @resource.call(env).should == [200, {"Content-Type" => "application/json"}, ['{"id":"12"}']]
-    env = { 'HTTP_USER_AGENT' => 'Mobile'}.merge({'PATH_INFO' => '/test/12/aaa'})
-    @resource.call(env).should == false
+  it 'should get responses for requests' do
+    request = Rack::Request.new({
+      'REQUEST_METHOD'  => 'GET',
+      'HTTP_USER_AGENT' => 'Mobile',
+      'PATH_INFO'       => '/test/12.js'
+    })
+    response = @resource.call(request)
+    response.status.should == 200
+    response.headers["Content-Type"].should == "application/json"
+    response.body.should == ['{"id":"12"}']
+    request = Rack::Request.new({
+      'REQUEST_METHOD'  => 'GET',
+      'HTTP_USER_AGENT' => 'Mobile',
+      'PATH_INFO'       => '/test/12/aaa'
+    })
+    @resource.call(request).should == false
   end
 
 end
