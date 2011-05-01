@@ -1,9 +1,7 @@
 require 'rubygems'
 require 'rack'
-
-require 'ruil/path_info_parser'
 require 'ruil/register'
-require 'ruil/json_template'
+
 
 module Ruil
 
