@@ -70,6 +70,9 @@ module Ruil
     #   Patterns may include named parameters accessibles via the hash that
     #   the {Ruil::PathInfoParser#===} method returns after a match check.
     #
+    # @param authorizer [lambda(Ruil::Request)]
+    #   A procedure that checks if the user is allowed to access the resource.
+    #
     # @param responders [Array<Responder>] an array with responders.
     def initialize(request_methods, path_pattern, authorizer = nil, responders = [], &block)
       # Set request methods
