@@ -38,6 +38,8 @@ describe Ruil::HTMLResponder do
     responder = Ruil::HTMLResponder.new('/tmp/spec/ruil')
     @test_request.call(responder, '/ruil.html', 'x', 'text/html', nil)
     @test_request.call(responder, '/ruil', 'x', 'text/html', nil)
+    @test_request.call(responder, '/ruil/', 'x', 'text/html', nil)
+    @test_request.call(responder, '/ruil/#', 'x', 'text/html', nil)
     @test_request.call(responder, '/ruil.xhtml', 'x', 'application/xhtml+xml', nil)
   end
 
