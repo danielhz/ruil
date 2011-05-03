@@ -6,29 +6,27 @@ require 'rspec'
 describe Ruil::HTMLResponder do
 
   before(:all) do
-    # Define templates and requests
+    # Templates
     Dir.mkdir '/tmp/spec'
-    @templates = []
-    request = Ruil::Request.new(Rack::Request.new({}))
-    request.rack_request.path_info = 'ruil.html'
-    request.generated_data = {:v => 'HTML'}
-    @templates << ['/tmp/spec/ruil.desktop.tenjin.html', '<p>#{@v}</p>', request]
-    request = Ruil::Request.new(Rack::Request.new({}))
-    request.rack_request.path_info = 'ruil.xhtml'
-    request.generated_data = {:v => 'XHTML'}
-    @templates << ['/tmp/spec/ruil.desktop.tenjin.xhtml', '<p>#{@v}</p>', request]
-    @templates.each do |t|
-      template = File.new(t[0], 'w')
-      template << t[1]
-      template.close
+    ['html', 'xhtml'].each do |suffix|
+      file = File.new("/tmp/spec/ruil.desktop.tenjin.#{suffix}", 'w')
+      file << '<p id="' + suffix + '">#{@x}</p>'
+      file.close
     end
-    # @layout = '/tmp/layout.'
-    # File.new(t[0], 'w')
-    # @layo << t[1]
-    # template.close
-    # Define responders
-    @responder1 = Ruil::HTMLResponder.new('/tmp/spec/ruil')
-    # @responder2 = Ruil::HTMLResponder.new('/tmp/ruil', @layout)
+    # Test a request
+    @test_request = lambda do |responder, path_info, generated_data, content_type, layout|
+      # Defining request
+      request = Ruil::Request.new(Rack::Request.new({}))
+      request.rack_request.path_info = path_info
+      request.generated_data = {:x => generated_data}
+      # Checking response
+      response = responder.call(request)
+      response.status.should == 200
+      suffix = path_info.sub(/^.*\./, '')
+      suffix = 'html' if suffix == path_info
+      response.body.should == ["<p id=\"#{suffix}\">#{generated_data}</p>"]
+      response.header['Content-Type'].should == content_type
+    end
   end
 
   after(:all) do
@@ -37,26 +35,14 @@ describe Ruil::HTMLResponder do
   end
 
   it 'should respond files without layout' do
-    @templates.each do |template|
-      response = @responder1.call(template[2])
-      response.status.should == 200
-      response.body.should == ["<p>#{template[2].generated_data[:v]}</p>"]
-      case template[2].rack_request.path_info
-      when /.html$/
-        response.header['Content-Type'].should == 'text/html'
-      when /.xhtml$/
-        response.header['Content-Type'].should == 'application/xhtml+xml'
-      else
-        raise
-      end
-    end
+    responder = Ruil::HTMLResponder.new('/tmp/spec/ruil')
+    @test_request.call(responder, '/ruil.html', 'x', 'text/html', nil)
+    @test_request.call(responder, '/ruil', 'x', 'text/html', nil)
+    @test_request.call(responder, '/ruil.xhtml', 'x', 'application/xhtml+xml', nil)
   end
 
-  # it 'should respond using a html file with layout' do
-  #   response = @responder1.call(@request2)
-  #   response.status.should == 200
-  #   response.body.should == ['<html><body><p>HTML: hello world<p></body></html>']
-  #   response.header['Content-Type'].should == 'text/html'
-  # end
+  it 'should respond using a html file with layout' do
+    # TODO
+  end
 
 end

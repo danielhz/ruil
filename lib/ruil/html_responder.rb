@@ -33,7 +33,7 @@ module Ruil
                      when "xhtml"
                        "application/xhtml+xml"
                      else
-                       raise "Media type unknow for #{a[3]}"
+                       next
                      end
         # Add template
         engine = case a[2]
@@ -59,15 +59,10 @@ module Ruil
     # @param [Ruil::Request] request the request to respond.
     # @return [Rack::Response] the response.
     def call(request)
-      case request.rack_request.path_info
-      when /.html$/
-        suffix = :html
-      when /.xhtml$/
-        suffix = :xhtml
-      else
-        return false
-      end
-      template = @templates.select{ |t| t[:suffix] == suffix }.map.first
+      path_info = request.rack_request.path_info
+      suffix = path_info.sub(/^.*\./, '')
+      suffix = 'html' if suffix == path_info
+      template = @templates.select{ |t| t[:suffix] == suffix.to_sym }.map.first
 
       unless template.nil?
         body = template[:engine].render(template[:file], request.generated_data)
