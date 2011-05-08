@@ -44,7 +44,7 @@ module Ruil
                    raise "Template engine unknown #{a[2]}"
                  end
         @templates << {
-          :mode       => mode,
+          :mode       => mode.to_sym,
           :engine     => engine,
           :file       => file,
           :media_type => media_type,
@@ -62,7 +62,9 @@ module Ruil
       path_info = request.rack_request.path_info
       suffix = path_info.sub(/^.*\./, '')
       suffix = 'html' if suffix == path_info
-      template = @templates.select{ |t| t[:suffix] == suffix.to_sym }.map.first
+      template = @templates.select{
+        |t| t[:suffix] == suffix.to_sym and t[:mode] == mode(request)
+      }.map.first
 
       unless template.nil?
         body = template[:engine].render(template[:file], request.generated_data)
@@ -70,6 +72,13 @@ module Ruil
       else
         return false
       end
+    end
+
+    def mode(request)
+      r = request.rack_request
+      r.session[:mode] = r.params['mode'].to_sym unless r.params['mode'].nil?
+      r.session[:mode] = :desktop if r.session[:mode].nil?
+      r.session[:mode]
     end
 
   end

@@ -16,7 +16,7 @@ describe Ruil::HTMLResponder do
     # Test a request
     @test_request = lambda do |responder, path_info, generated_data, content_type, layout|
       # Defining request
-      request = Ruil::Request.new(Rack::Request.new({}))
+      request = Ruil::Request.new(Rack::Request.new({'rack.input' => ''}))
       request.rack_request.path_info = path_info
       request.generated_data = {:x => generated_data}
       # Checking response
