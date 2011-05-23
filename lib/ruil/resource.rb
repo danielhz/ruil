@@ -109,9 +109,13 @@ module Ruil
       request = Ruil::Request.new(rack_request)
       request.generated_data[:path_info_params] = path_info_params
       @block.call(request) unless @block.nil?
-      @responders.each do |responder|
-        response = responder.call(request)
-        return response if response
+      if request.responder.nil?
+        @responders.each do |responder|
+          response = responder.call(request)
+          return response if response
+        end
+      else
+        return request.responder.call(request)
       end
       raise "Responder not found for #{request.inspect}"
     end

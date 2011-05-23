@@ -19,6 +19,10 @@ module Ruil
     # @return [Hash]
     attr_accessor :generated_data
 
+    # The selected responder.
+    # @return [Object]
+    attr_accessor :responder
+
     # The rack request
     # @return [Rack::Request]
     attr_accessor :rack_request
