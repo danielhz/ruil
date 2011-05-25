@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'tenjin'
+require 'uagent_rack'
 
 module Ruil
 
@@ -51,6 +52,7 @@ module Ruil
           :suffix     => a[3].to_sym
         }
       end
+      @uagent_parser = UAgent::Parser.new
     end
 
     # Creates a resource representation using a template for the
@@ -77,7 +79,7 @@ module Ruil
     def mode(request)
       r = request.rack_request
       r.session[:mode] = r.params['mode'].to_sym unless r.params['mode'].nil?
-      r.session[:mode] = :desktop if r.session[:mode].nil?
+      r.session[:mode] = @uagent_parser.call(request.rack_request.env) if r.session[:mode].nil?
       r.session[:mode]
     end
 
