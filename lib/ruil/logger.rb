@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'json'
+require 'rack'
 
 module Ruil
 
@@ -7,10 +8,12 @@ module Ruil
   # JSON format.
   class Logger
     # Create a new logger.
-    def new(app, dir)
+    def initialize(app, dir)
+      puts 'initialiazing'
       @app       = app
+      @dir       = dir
       @file_name = nil
-      @log_file   = nil
+      @log_file  = nil
     end
 
     # Set the log_file using the current date.
@@ -19,16 +22,18 @@ module Ruil
       unless @file_name == file_name
         @file_name = file_name
         @log_file.close unless @log_file.nil?
-        @log_file = File.new(@file_name , '+a')
+        @log_file = File.new(@file_name , 'a+')
       end
       @log_file
     end
 
     # Call the logger.
     def call(env)
-      request = Rack::Request(env)
+      request = Rack::Request.new(env)
+      status, header, body = @app.call(env)
       log_entry = {
         'timestamp'  => Time.now.to_i,
+        'status'     => status,
         'path_info'  => request.path_info,
         'params'     => request.params,
         'url'        => request.url,
@@ -39,7 +44,8 @@ module Ruil
       unless request.session[:user].nil?
         log_entry['user_id'] = request.session[:user][:oid]
       end
-      log_file << log_entry.to_json
+      log_file << log_entry.to_json + "\n"
+      [status, header, body]
     end
   end
 end
