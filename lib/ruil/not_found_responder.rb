@@ -15,7 +15,7 @@ module Ruil
                      when Rack::Request
                        request
                      end
-      body   = "Resource not found: #{rack_request.method} #{rack_request.url}"
+      body   = "Resource not found: #{rack_request.request_method} #{rack_request.url}"
       Rack::Response.new(body, 200, {'Content-Type' => 'text/plain'})
     end
 
