@@ -1,8 +1,8 @@
 
 module Ruil
 
-  # {Ruil::NotFoundResponder} objects respond with a not found message.
-  class NotFoundResponder
+  # {Ruil::NotFoundResponder} respond with a not found message.
+  module NotFoundResponder
 
     # Creates a not-found response to a request.
     #
