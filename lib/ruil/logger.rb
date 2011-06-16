@@ -21,7 +21,6 @@ module Ruil
     def log_file
       file_name = Time.now.strftime(File.join(@dir, '%Y-%m-%d.log'))
       unless @@file_name == file_name
-        puts "new log file #{@@file_name}"
         @@file_name = file_name
         @@log_file.close unless @@log_file.nil?
         @@log_file = File.new(@@file_name , 'a+')

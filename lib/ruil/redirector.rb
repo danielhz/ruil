@@ -24,8 +24,11 @@ module Ruil
     # @param request[Ruil::Request] the request.
     # @return [Rack::Response] the response.
     def call(request)
-      headers = {'Location'=> @redirect_to + "?redirected_from=" + request.rack_request.path_info}
-      Rack::Response.new([], 302, headers)
+      location_suffix = "redirected_from=" + request.rack_request.path_info
+      location_sep    = case @redirect_to; when /\?$/; ''; when /\?.+/; '&'; else '?'; end
+      location        = @redirect_to + location_sep + location_suffix
+
+      Rack::Response.new([], 302, { 'Location' => location })
     end
 
   end
