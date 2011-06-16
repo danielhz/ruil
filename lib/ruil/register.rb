@@ -37,7 +37,7 @@ module Ruil
         response = resource.call(request)
         return response.finish if response
       end
-      Ruil::NotFoundResponder.call request
+      Ruil::NotFoundResponder.call(request).finish
     end
 
   end
