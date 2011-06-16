@@ -8,7 +8,7 @@ module Ruil
     #
     # @param [Ruil::Request] request the request to respond.
     # @return [Rack::Response] the response.
-    def call(request)
+    def self.call(request)
       method = request.rack_request.method
       url    = request.rack_request.url
       body   = "Resource not found: #{method} #{url}"
