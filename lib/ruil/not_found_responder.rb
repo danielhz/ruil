@@ -9,9 +9,13 @@ module Ruil
     # @param [Ruil::Request] request the request to respond.
     # @return [Rack::Response] the response.
     def self.call(request)
-      method = request.rack_request.method
-      url    = request.rack_request.url
-      body   = "Resource not found: #{method} #{url}"
+      rack_request = case request
+                     when Ruil::Request
+                       request.rack_request
+                     when Rack::Request
+                       request
+                     end
+      body   = "Resource not found: #{rack_request.method} #{rack_request.url}"
       Rack::Response.new(body, 200, {'Content-Type' => 'text/plain'})
     end
 
