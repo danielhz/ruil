@@ -35,9 +35,9 @@ module Ruil
       end
       @@resources[request.request_method].each do |resource|
         response = resource.call(request)
-        return response.finish if response
+        return response if response
       end
-      Ruil::NotFoundResponder.call(request).finish
+      [401, {'Content-Type' => 'plain/text'}, ["Resource not found: #{request.url}"]]
     end
 
   end

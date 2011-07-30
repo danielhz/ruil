@@ -28,12 +28,12 @@ module Ruil
     #
     # @param methods
     # @param pattern
-    def self.resource(methods, pattern, acl = false, &block)
+    def resource(methods, pattern, acl = false, &block)
       Ruil::Resource.new(methods, pattern, acl, &block)
     end
 
     # Redirect the request to other URL.
-    def self.redirect(request, url)
+    def redirect(request, url)
       headers = {'Location'=> url + "?redirected_from=" + request.path_info}
       [302, headers, []]
     end
@@ -41,7 +41,7 @@ module Ruil
     # Respond OK
     #
     # @param body[String] the response body
-    def self.ok(type, body, headers = {})
+    def ok(type, body, headers = {})
       # Apply custom skins.
       Ruil::Skin.call body if [:html, :xhtml].include? type
       # Setup headers.

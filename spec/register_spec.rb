@@ -18,7 +18,7 @@ describe Ruil::Register do
         @value = value
       end
       def call(request)
-        request.path_info == @value ? MockResponse.new(@value) : false
+        request.path_info == @value ? MockResponse.new(@value).finish : false
       end
       def request_methods
         ['GET']
