@@ -67,6 +67,7 @@ module Ruil
         end
       # Set the path info parser
       @path_info_parser = Ruil::PathInfoParser.new(pattern)
+      @resource_pattern = pattern
       # Block that generates the response
       if block_given?
         @block = lambda { |request| yield request }
@@ -83,6 +84,7 @@ module Ruil
     # @return [Array] a response for the request in the format [status, headers, [body]].
     def call(request)
       if request[:path_info_params] = ( @path_info_parser === request.path_info )
+        request[:path_info_pattern] = @path_info_pattern
         Ruil::Authorizer.call request, @block
       else
         false

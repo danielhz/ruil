@@ -2,7 +2,27 @@ module Ruil
 
   # {Ruil::Authorizer} allow us to define an ACL.
   # 
-  # Each access rule is composed by a pattern to check 
+  # === Access rules
+  #
+  # Each access rule is composed by a pattern and a condition to check.
+  #
+  # The next example shows a rule authorizing all requests mathing the
+  # path pattern '/foo/:bar'.
+  # 
+  #     Ruil::Authorizer << '/foo/:bar'
+  #
+  # The next example shows a rule authorizing only requests associated to
+  # logged users.
+  #
+  #     Ruil::Authorizer << '/foo/:bar', lambda { |r| not r.session[:user].nil? }
+  #
+  # === Reject action
+  #
+  # By default rejected requests are redirected to '/login'. You can change
+  # that behavior:
+  #
+  #     Ruil::Authorizer.rejector lambda { |r| ok :text, 'Forbidden resource!' }
+  #
   module Authorizer
     include Ruil::Controller
 
