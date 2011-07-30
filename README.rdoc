@@ -17,7 +17,7 @@ This library helps you to buil web applications on top of rack.
     class MyController
       include Ruil::Controller
       
-      resource :get, '/foo/:bar' do |request|
+      resource 'GET', '/foo/:bar' do |request|
         ok :text, 'hello ' + request[:path_info_params][:bar]
       end
     end
@@ -28,7 +28,7 @@ This library helps you to buil web applications on top of rack.
     class MyController
       include Ruil::Controller
       
-      resource :get, '/foo/:bar' do |request|
+      resource 'GET', '/foo/:bar' do |request|
         ok :text, 'hello ' + request[:path_info_params][:bar]
       end
     end

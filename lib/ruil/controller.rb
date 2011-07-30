@@ -9,7 +9,7 @@ module Ruil
   #     class MyController
   #       include Ruil::Controller
   #
-  #       resource :get, '/mycontroller/:your_name' do |request|
+  #       resource 'GET', '/mycontroller/:your_name' do |request|
   #         ok :text, 'hello ' + request[:path_info_params][:your_name]
   #       end
   #     end
