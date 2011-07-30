@@ -61,7 +61,7 @@ module Ruil
     #   defines a pattern to match paths.
     #   Patterns may include named parameters accessibles via the hash that
     #   the {Ruil::PathInfoParser#===} method returns after a match check.
-    def initialize(request_methods, pattern, &block)
+    def initialize(request_methods, pattern, acl = false, &block)
       # Set request methods
       @request_methods =
         case request_methods
@@ -81,6 +81,8 @@ module Ruil
       else
         raise 'Block is obligatory!'
       end
+      # Set ACL flag.
+      @acl = acl
       # Register it
       Ruil::Register << self
     end
@@ -92,7 +94,11 @@ module Ruil
     def call(request)
       if request[:path_info_params] = ( @path_info_parser === request.path_info )
         request[:path_info_pattern] = @path_info_pattern
-        Ruil::Authorizer.call request, @block
+        if @acl
+          Ruil::Authorizer.call request, @block
+        else
+          @block.call request
+        end
       else
         false
       end

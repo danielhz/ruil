@@ -9,7 +9,7 @@ module Ruil
   #     class MyController
   #       include Ruil::Controller
   #
-  #       get '/mycontroller/:your_name' do |request|
+  #       resource :get, '/mycontroller/:your_name' do |request|
   #         ok :text, 'hello ' + request[:path_info_params][:your_name]
   #       end
   #     end
@@ -28,8 +28,8 @@ module Ruil
     #
     # @param methods
     # @param pattern
-    def self.resource(methods, pattern, &block)
-      Ruil::Resource.new(methods, pattern, &block)
+    def self.resource(methods, pattern, acl = false, &block)
+      Ruil::Resource.new(methods, pattern, acl, &block)
     end
 
     # Redirect the request to other URL.

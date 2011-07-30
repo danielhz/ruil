@@ -9,7 +9,31 @@ Basic tools for build web applications on top of rack
 
 == Usage
 
-=== Code example
+This library helps you to buil web applications on top of rack.
+
+=== Simple hello application
+
+    !!!ruby
+    class MyController
+      include Ruil::Controller
+      
+      resource :get, '/foo/:bar' do |request|
+        ok :text, 'hello ' + request[:path_info_params][:bar]
+      end
+    end
+
+=== Using ACL
+
+    !!!ruby
+    class MyController
+      include Ruil::Controller
+      
+      resource :get, '/foo/:bar' do |request|
+        ok :text, 'hello ' + request[:path_info_params][:bar]
+      end
+    end
+    
+    Ruil::Authorizer << '/foo/:bar', lambda { |r| not r.session[:user].nil? }
 
 == Install from code
 
