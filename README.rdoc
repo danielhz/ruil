@@ -58,8 +58,8 @@ file in the coverage directory after running the spec.
 
 == Other Stuff
 
-Author:: Daniel Hernández, daniel@degu.cl
-License:: GPL V3
+[Author]  {Daniel Hernández}[http://daniel.degu.cl]
+[License] {GPL V3}[http://www.gnu.org/copyleft/gpl.html]
 
 == Warranty
 
