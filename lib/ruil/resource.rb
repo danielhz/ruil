@@ -25,19 +25,6 @@ module Ruil
   #    resource = Resource.new('GET', "/index")
   #    puts Ruil::Register.call(request)  # => the response using the register
   #
-  # === Templates
-  #
-  # The interface of templates consists in the +new+, +key+ and +call+ methods.
-  # Classes that satisfy that interface are {Ruil::Template} and
-  # {Ruil::JSONTemplate}. Every resource have a {Ruil::JSONTemplate} as a
-  # default template.
-  #
-  #    resource = Resource.new('GET', "/index") do |res|
-  #      Dir['path_to_templates/*'].each do |file|
-  #        res << Ruil::Template.new(file)
-  #      end
-  #    end
-  #
   # === Path patterns
   #
   # Path patterns are strings that are matched with the request path info.
@@ -63,16 +50,11 @@ module Ruil
     #   methods are: <tt>"GET"</tt>, <tt>"POST"</tt>, <tt>"PUT"</tt> and
     #   <tt>"DELETE"</tt>.
     #
-    # @param path_pattern [String]
+    # @param pattern [String]
     #   defines a pattern to match paths.
     #   Patterns may include named parameters accessibles via the hash that
     #   the {Ruil::PathInfoParser#===} method returns after a match check.
-    #
-    # @param authorizer [lambda(Ruil::Request)]
-    #   A procedure that checks if the user is allowed to access the resource.
-    #
-    # @param responders [Array<Responder>] an array with responders.
-    def initialize(request_methods, path_pattern, authorizer = nil, responders = [], &block)
+    def initialize(request_methods, pattern, &block)
       # Set request methods
       @request_methods =
         case request_methods
@@ -84,40 +66,27 @@ module Ruil
           raise "Invalid value for request_methods: #{request_methods.inspect}"
         end
       # Set the path info parser
-      @path_info_parser = Ruil::PathInfoParser.new(path_pattern)
-      # Set the authorizer method
-      @authorizer = authorizer
-      # Set responders
-      @responders = [Ruil::JSONResponder.instance] + responders
-      # Block that generates data
-      @block = Proc.new { |request| yield request } if block_given?
-      # Register
+      @path_info_parser = Ruil::PathInfoParser.new(pattern)
+      # Block that generates the response
+      if block_given?
+        @block = lambda { |request| yield request }
+      else
+        raise 'Block is obligatory!'
+      end
+      # Register it
       Ruil::Register << self
     end
 
     # Respond a request
     #
     # @param request [Rack::Request] a request to the resource.
-    # @return [Rack::Response] a response for the request.
-    def call(rack_request)
-      path_info = rack_request.path_info
-      path_info_params = ( @path_info_parser === path_info )
-      return false unless path_info_params
-      unless @authorizer.nil?
-        return @autorizer.unauthorized unless @authorizer.authorize(request)
-      end
-      request = Ruil::Request.new(rack_request)
-      request.generated_data[:path_info_params] = path_info_params
-      @block.call(request) unless @block.nil?
-      if request.responder.nil?
-        @responders.each do |responder|
-          response = responder.call(request)
-          return response if response
-        end
+    # @return [Array] a response for the request in the format [status, headers, [body]].
+    def call(request)
+      if request[:path_info_params] = ( @path_info_parser === request.path_info )
+        Ruil::Authorizer.call request, @block
       else
-        return request.responder.call(request)
+        false
       end
-      raise "Responder not found for #{request.inspect}"
     end
 
   end

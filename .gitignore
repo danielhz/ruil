@@ -5,3 +5,4 @@ pkg
 *.html.cache
 .yardoc
 ruil.gemspec
+*.swp
