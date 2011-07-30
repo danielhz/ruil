@@ -36,6 +36,13 @@ module Ruil
   #    resource.call(env)    # matches are { :user_id => "232, :picture_id => "56" }
   #    env['PATH_INFO'] = "/users/23/pictures"
   #    resource.call(env)    # match is false
+  #
+  # After suscessfull matches the matching pattern and the matches are stored in
+  # the request.
+  # 
+  #    request[:path_info_pattern]  # => the pattern
+  #    request[:path_info_params]   # => the matches
+  #
   class Resource
 
     # Methods that a resource responds.
