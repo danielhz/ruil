@@ -1,4 +1,3 @@
-require ''
 
 module Ruil
 
