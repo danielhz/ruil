@@ -1,3 +1,5 @@
+require ''
+
 module Ruil
 
   module Skin
@@ -7,7 +9,7 @@ module Ruil
       :mobile  => []
     }
 
-    def call(body)
+    def self.call(body)
       body
     end
 

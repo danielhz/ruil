@@ -34,7 +34,9 @@ module Ruil
 
     # Redirect the request to other URL.
     def redirect(request, url)
-      headers = {'Location'=> url + "?redirected_from=" + request.path_info}
+      headers = {
+        'Location'=> url + ( /\?/ === url ? '&' : '?' ) + 'redirected_from=' + request.path_info
+      }
       [302, headers, []]
     end
 
